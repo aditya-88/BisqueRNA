@@ -5,6 +5,10 @@ This repository contains scripts used to prepare and deconvolve cell type propor
 ## BisqueRNA.R
 The main script written by Oscar Bedoya Reina to perform deconvolution of bulk RNAseq data based on a single cell RNAseq dataset. The package used to perform deconvolution here is BisqueRNA.
 
+This script was modified by **Aditya Singh**
+
+This modification converts the pipeline into a user software, not requiring any modification to the code.
+
 To run the script two libraries are needed:
 - BisqueRNA
 - Biobase
@@ -29,3 +33,7 @@ The folder called test_files contains pseudo-data to test the BisqueRNA script.
 ## Contact
 For questions don't hesitate to send me a message at:
 q.c.lin@students.uu.nl
+
+For the modified code, feel free to open an issue on this GitHub repo.
+
+*Aditya Singh*

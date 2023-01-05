@@ -1,7 +1,6 @@
 #!/usr/bin/env R
 # -*- coding: utf-8 -*-
 #
-#  example.R
 #  
 #  Copyright 2020 Oscar C. Bedoya-Reina <oscar@oscar-J53kOiSr>
 #  
@@ -20,7 +19,199 @@
 #  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #  MA 02110-1301, USA.
 #  
-#  
+#
+
+# Modified by Aditya Singh <github.com/aditya-88>
+# This modification converts the pipeline into a user software, not requiring any modification to the code.
+
+# Get the following user arguments:
+# 1. Path to the bulk counts file
+# 2. Path to the single cell counts file
+# 3. Path to the single cell clusters labels file
+# 4. Path to the output file (Optional, will use the same folder and derived file name as the bulk counts file if not provided
+
+# Check if required libraries are installed, if not, install them
+cat("Checking if required libraries are installed, if not, installing them")
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+if (!requireNamespace("Biobase", quietly = TRUE))
+    BiocManager::install("Biobase")
+if (!requireNamespace("BisqueRNA", quietly = TRUE))
+    BiocManager::install("BisqueRNA")
+cat("\nRequired libraries verified to be installed or installed successfully")
+
+# Check if user has provided the required arguments, if not, show usage information
+args = commandArgs(trailingOnly = TRUE)
+cat("\nChecking user arguments\n")
+if (length(args) < 3) {
+	cat("[ERROR] User has not provided the required arguments\n")
+    cat("Usage: Rscript BisqueRNA.R bulk_counts_file single_cell_counts_file single_cell_clusters_labels_file [output_file]
+
+")
+    cat("bulk_counts_file: Path to the bulk counts file
+
+")
+    cat("single_cell_counts_file: Path to the single cell counts file
+
+")
+    cat("single_cell_clusters_labels_file: Path to the single cell clusters labels file
+
+")
+    cat("output_file: Path to the output file (Optional, will use the same folder and derived file name as the bulk counts file if not provided)
+
+")
+    q()
+}
+
+# Path to the bulk counts file
+cnts_inBlk_fl = args[1]
+# Path to the single cell counts file
+cnts_SC_inFl = args[2]
+# Path to the single cell clusters labels file
+clstrs_SC_inFl = args[3]
+# Path to the output file (Optional, will use the same name as the bulk counts file if not provided)
+if (length(args) == 4){
+    outFlPrprtnsBisqueRNA = args[4]
+} else {
+    outFlPrprtnsBisqueRNA = paste0(cnts_inBlk_fl, ".BisqueRNA.csv")
+}
+
+# Method to read clustering and return clusters
+rtrnClstrs=function(outClstrs)
+	{
+	dataset2=read.csv(outClstrs, header=T, sep="	")
+	cell=dataset2[,1]
+	cell=as.character(cell)
+	dataset=data.frame(dataset2[,-1])
+	rownames(dataset)=cell
+	return(t(dataset))
+	}
+
+# Wrapper to execute the code
+runBisqueRNAStndAln=function(cnts_inBlk_fl,cnts_SC_inFl,clstrs_SC_inFl, 
+	outFlPrprtnsBisqueRNA,sep=',')
+	{
+	library(BisqueRNA)
+	library(Biobase)
+	# Load bulk
+	cnts_blk_sampleID = rtrnCntsFrmFl(cnts_inBlk_fl)
+	cnts_blk = cnts_blk_sampleID$gene
+	# Load reference SC
+	cnts_ref_sampleID = rtrnCntsFrmFl(cnts_SC_inFl,sep=sep)
+	cnts_ref = cnts_ref_sampleID$gene
+	ar_clstrsOri = rtrnCl
+
+# Get the user arguments 
+args = commandArgs(trailingOnly = TRUE)
+cnts_inBlk_fl = args[1]
+cnts_SC_inFl = args[2]
+clstrs_SC_inFl = args[3]
+if (length(args) == 4){
+    outFlPrprtnsBisqueRNA = args[4]
+} else {
+    outFlPrprtnsBisqueRNA = paste0(cnts_inBlk_fl, ".BisqueRNA.csv")
+	# Check if parent directory to the output file exists, if not, create it
+	if (!dir.exists(dirname(outFlPrprtnsBisqueRNA))) {
+		dir.create(dirname(outFlPrprtnsBisqueRNA), recursive = TRUE)
+	}
+	else {
+	   cat("Parent folder to the user provided output file verified to exist")
+	}
+}
+
+# Check if input files exist
+if (!file.exists(cnts_inBlk_fl)) {
+    cat("Bulk counts file does not exist
+
+")
+    q()
+}
+if (!file.exists(cnts_SC_inFl)) {
+    cat("Single cell counts file does not exist
+
+")
+    q()
+}
+if (!file.exists(clstrs_SC_inFl)) {
+    cat("Single cell clusters labels file does not exist
+
+")
+    q()
+}
+
+# Method to read clustering and return clusters
+rtrnClstrs=function(outClstrs)
+	{
+	dataset2=read.csv(outClstrs, header=T, sep="	")
+	cell=dataset2[,1]
+	cell=as.character(cell)
+	dataset=data.frame(dataset2[,-1])
+	rownames(dataset)=cell
+	return(t(dataset))
+	}
+
+# Wrapper to execute the code
+runBisqueRNAStndAln=function(cnts_inBlk_fl,cnts_SC_inFl,clstrs_SC_inFl, 
+	outFlPrprtnsBisqueRNA,sep=',')
+	{
+	library(BisqueRNA)
+	library(Biobase)
+	# Load bulk
+	cnts_blk_sampleID = rtrnCntsFrmFl(cnts_inBlk_fl)
+	cnts_blk = cnts_blk_sampleID$gene
+	# Load reference SC
+	cnts_ref_sampleID = rtrnCntsFrmFl(cnts_SC_inFl,sep=sep)
+	cnts_ref = cnts_ref_sampleID$gene
+	ar_clstrsOri = rtrnClstrs(clstrs_SC_inFl)
+	# Run BisqueRNA
+	proportions = BisqueRNA::BisqueRNA(cnts_blk, cnts_ref, ar_clstrsOri)
+	# Write to file
+	write.csv(proportions, file=outFlPrprtnsBisqueRNA, row.names=T)
+	}
+
+# Run the code
+runBisqueRNAStndAln(cnts_inBlk_fl,cnts_SC_inFl,clstrs_SC_inFl, 
+	outFlPrprtnsBisqueRNA,sep=',')
+
+# Get the user arguments 
+args = commandArgs(trailingOnly = TRUE)
+cnts_inBlk_fl = args[1]
+cnts_SC_inFl = args[2]
+clstrs_SC_inFl = args[3]
+if (length(args) == 4){
+    outFlPrprtnsBisque
+
+
+# Method to read clustering and return clusters
+rtrnClstrs=function(outClstrs)
+	{
+	dataset2=read.csv(outClstrs, header=T, sep="	")
+	cell=dataset2[,1]
+	cell=as.character(cell)
+	dataset=data.frame(dataset2[,-1])
+	rownames(dataset)=cell
+	return(t(dataset))
+	}
+
+# Wrapper to execute the code
+runBisqueRNAStndAln=function(cnts_inBlk_fl,cnts_SC_inFl,clstrs_SC_inFl, 
+	outFlPrprtnsBisqueRNA,sep=',')
+	{
+	library(BisqueRNA)
+	library(Biobase)
+	# Load bulk
+	cnts_blk_sampleID = rtrnCntsFrmFl(cnts_inBlk_fl)
+	cnts_blk = cnts_blk_sampleID$gene
+	# Load reference SC
+	cnts_ref_sampleID = rtrnCntsFrmFl(cnts_SC_inFl,sep=sep)
+	cnts_ref = cnts_ref_sampleID$gene
+	ar_clstrsOri = rtrnClstrs(clstrs_SC_inFl)
+	smplNames_pData_trngData = rtrnTrngDtStrctr(cnts_SC_inFl,clstrs_SC_inFl)
+	smplNames = smplNames_pData_trngData$smplNames
+	pData = smplNames_pData_trngData$pData
+	trngData = smplNames_pData_trngData$trngData
+	#
+	bulk.eset <- Biob
 
 #Method to read clustering and return clusters
 rtrnClstrs=function(outClstrs)
@@ -108,11 +299,11 @@ rtrnTrngDtStrctr=function(cnts_SC_inFl,clstrs_SC_inFl,sep=',')
 	return(list('smplNames'=smplNames,'pData'=pData,'trngData'=trngData))
 	}
 
-#Inputs:
+#Inputs description:
 ##################
 #1) Count in bulk-sequences file
 # cnts_inBlk_fl="20220531_Oscars_tool/readcount_frmtd_inGSE127465_GRCm38frmh38.csv"
-cnts_inBlk_fl="20220531_Oscars_tool/ALS_Human_EWCE/Data/tt_AH.csv"
+#cnts_inBlk_fl="20220531_Oscars_tool/ALS_Human_EWCE/Data/tt_AH.csv"
 #The format for this file is as follows:
 #
 #!Sample_title	Bulk-sample_1	Bulk-sample_2	...	Bulk-sample_N
@@ -128,7 +319,7 @@ cnts_inBlk_fl="20220531_Oscars_tool/ALS_Human_EWCE/Data/tt_AH.csv"
 ##################
 #2) Counts in single cell file
 # cnts_SC_inFl="20220531_Oscars_tool/GSE127465_GRCm38frmh38_inreadcount_frmtd.ensmbl.cnts.csv"
-cnts_SC_inFl="20220531_Oscars_tool/ALS_Human_EWCE/Data/SS_10cat.csv"
+#cnts_SC_inFl="20220531_Oscars_tool/ALS_Human_EWCE/Data/SS_10cat.csv"
 #The format for this file is as follows:
 #
 #file,Cell_1,Cell_2,...,Cell_N
@@ -144,7 +335,7 @@ cnts_SC_inFl="20220531_Oscars_tool/ALS_Human_EWCE/Data/SS_10cat.csv"
 ##################
 #3) Cluster labels
 # clstrs_SC_inFl="20220531_Oscars_tool/GSE127465_human.immgen.clstrsLbld.csv.csv"
-clstrs_SC_inFl="20220531_Oscars_tool/ALS_Human_EWCE/Data/SS_names.csv"
+#clstrs_SC_inFl="20220531_Oscars_tool/ALS_Human_EWCE/Data/SS_names.csv"
 #The format for this file is as follows:
 #
 #cell	cluster
@@ -155,7 +346,8 @@ clstrs_SC_inFl="20220531_Oscars_tool/ALS_Human_EWCE/Data/SS_names.csv"
 ##################
 
 #4) Output file for proportion
-outFlPrprtnsBisqueRNA="20220531_Oscars_tool/READOUT/READOUT_HUMAN_AH.csv"
+#outFlPrprtnsBisqueRNA="20220531_Oscars_tool/READOUT/READOUT_HUMAN_AH.csv"
 
 #Execute
 runBisqueRNAStndAln(cnts_inBlk_fl,cnts_SC_inFl,clstrs_SC_inFl,outFlPrprtnsBisqueRNA)
+cat("Done!")
