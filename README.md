@@ -14,6 +14,20 @@ To run the script two libraries are needed:
 - BisqueRNA
 - Biobase
 
+These libraries are automatically installed by the software if not provided.
+
+```bash
+Usage: Rscript BisqueRNA.R bulk_counts_file single_cell_counts_file single_cell_clusters_labels_file [output_file]
+
+bulk_counts_file: Path to the bulk counts file
+
+single_cell_counts_file: Path to the single cell counts file
+
+single_cell_clusters_labels_file: Path to the single cell clusters labels file
+
+output_file: Path to the output file (Optional, will use the same folder and derived file name as the bulk counts file if not provided)
+```
+
 ## Data files
 Data used as input for deconvolution were extracted from the following repositories:
 - https://github.com/NathanSkene/ALS_Human_EWCE
