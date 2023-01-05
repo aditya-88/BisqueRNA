@@ -1,4 +1,5 @@
-# 20220531_Oscars_tool
+# BisqueRNA Pipeline #
+
 ## General information
 This repository contains scripts used to prepare and deconvolve cell type proportions from several public bulk RNAseq datasets involving ALS.
 
