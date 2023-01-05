@@ -75,112 +75,44 @@ if (length(args) == 4){
 } else {
     outFlPrprtnsBisqueRNA = paste0(cnts_inBlk_fl, ".BisqueRNA.csv")
 }
-
-# Method to read clustering and return clusters
-rtrnClstrs=function(outClstrs)
-	{
-	dataset2=read.csv(outClstrs, header=T, sep="	")
-	cell=dataset2[,1]
-	cell=as.character(cell)
-	dataset=data.frame(dataset2[,-1])
-	rownames(dataset)=cell
-	return(t(dataset))
-	}
-
-# Wrapper to execute the code
-runBisqueRNAStndAln=function(cnts_inBlk_fl,cnts_SC_inFl,clstrs_SC_inFl, 
-	outFlPrprtnsBisqueRNA,sep=',')
-	{
-	library(BisqueRNA)
-	library(Biobase)
-	# Load bulk
-	cnts_blk_sampleID = rtrnCntsFrmFl(cnts_inBlk_fl)
-	cnts_blk = cnts_blk_sampleID$gene
-	# Load reference SC
-	cnts_ref_sampleID = rtrnCntsFrmFl(cnts_SC_inFl,sep=sep)
-	cnts_ref = cnts_ref_sampleID$gene
-	ar_clstrsOri = rtrnCl
-
 # Get the user arguments 
 args = commandArgs(trailingOnly = TRUE)
 cnts_inBlk_fl = args[1]
 cnts_SC_inFl = args[2]
 clstrs_SC_inFl = args[3]
 if (length(args) == 4){
-    outFlPrprtnsBisqueRNA = args[4]
+  outFlPrprtnsBisqueRNA = args[4]
 } else {
-    outFlPrprtnsBisqueRNA = paste0(cnts_inBlk_fl, ".BisqueRNA.csv")
-	# Check if parent directory to the output file exists, if not, create it
-	if (!dir.exists(dirname(outFlPrprtnsBisqueRNA))) {
-		dir.create(dirname(outFlPrprtnsBisqueRNA), recursive = TRUE)
-	}
-	else {
-	   cat("Parent folder to the user provided output file verified to exist")
-	}
+  outFlPrprtnsBisqueRNA = paste0(cnts_inBlk_fl, ".BisqueRNA.csv")
+  # Check if parent directory to the output file exists, if not, create it
+  if (!dir.exists(dirname(outFlPrprtnsBisqueRNA))) {
+    dir.create(dirname(outFlPrprtnsBisqueRNA), recursive = TRUE)
+  }
+  else {
+    cat("Parent folder to the user provided output file verified to exist")
+  }
 }
 
 # Check if input files exist
 if (!file.exists(cnts_inBlk_fl)) {
-    cat("Bulk counts file does not exist
+  cat("Bulk counts file does not exist
 
 ")
-    q()
+  q()
 }
 if (!file.exists(cnts_SC_inFl)) {
-    cat("Single cell counts file does not exist
+  cat("Single cell counts file does not exist
 
 ")
-    q()
+  q()
 }
 if (!file.exists(clstrs_SC_inFl)) {
-    cat("Single cell clusters labels file does not exist
+  cat("Single cell clusters labels file does not exist
 
 ")
-    q()
+  q()
 }
-
-# Method to read clustering and return clusters
-rtrnClstrs=function(outClstrs)
-	{
-	dataset2=read.csv(outClstrs, header=T, sep="	")
-	cell=dataset2[,1]
-	cell=as.character(cell)
-	dataset=data.frame(dataset2[,-1])
-	rownames(dataset)=cell
-	return(t(dataset))
-	}
-
-# Wrapper to execute the code
-runBisqueRNAStndAln=function(cnts_inBlk_fl,cnts_SC_inFl,clstrs_SC_inFl, 
-	outFlPrprtnsBisqueRNA,sep=',')
-	{
-	library(BisqueRNA)
-	library(Biobase)
-	# Load bulk
-	cnts_blk_sampleID = rtrnCntsFrmFl(cnts_inBlk_fl)
-	cnts_blk = cnts_blk_sampleID$gene
-	# Load reference SC
-	cnts_ref_sampleID = rtrnCntsFrmFl(cnts_SC_inFl,sep=sep)
-	cnts_ref = cnts_ref_sampleID$gene
-	ar_clstrsOri = rtrnClstrs(clstrs_SC_inFl)
-	# Run BisqueRNA
-	proportions = BisqueRNA::BisqueRNA(cnts_blk, cnts_ref, ar_clstrsOri)
-	# Write to file
-	write.csv(proportions, file=outFlPrprtnsBisqueRNA, row.names=T)
-	}
-
-# Run the code
-runBisqueRNAStndAln(cnts_inBlk_fl,cnts_SC_inFl,clstrs_SC_inFl, 
-	outFlPrprtnsBisqueRNA,sep=',')
-
-# Get the user arguments 
-args = commandArgs(trailingOnly = TRUE)
-cnts_inBlk_fl = args[1]
-cnts_SC_inFl = args[2]
-clstrs_SC_inFl = args[3]
-if (length(args) == 4){
-    outFlPrprtnsBisque
-
+## Functions
 
 # Method to read clustering and return clusters
 rtrnClstrs=function(outClstrs)
@@ -212,7 +144,7 @@ runBisqueRNAStndAln=function(cnts_inBlk_fl,cnts_SC_inFl,clstrs_SC_inFl,
 	trngData = smplNames_pData_trngData$trngData
 	#
 	bulk.eset <- Biob
-
+}
 #Method to read clustering and return clusters
 rtrnClstrs=function(outClstrs)
 	{
